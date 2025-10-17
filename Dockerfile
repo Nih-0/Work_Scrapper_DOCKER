@@ -1,7 +1,14 @@
+# Use Maven to build the JAR, then use JRE to run it
+FROM maven:3.9-eclipse-temurin-21-alpine AS builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
 FROM eclipse-temurin:21-jre-alpine
 WORKDIR /app
 RUN apk add --no-cache curl
-COPY target/companyScraper-1.0.0.jar app.jar
+COPY --from=builder /app/target/companyScraper-1.0.0.jar app.jar
 RUN mkdir -p /app/uploads /app/csv_backups /app/logs
 RUN chmod -R 755 /app/uploads /app/csv_backups /app/logs
 EXPOSE 8080
