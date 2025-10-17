@@ -471,31 +471,6 @@
             justify-content: center;
         }
 
-        .connection-status {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 12px 15px;
-            background: rgba(16, 185, 129, 0.1);
-            border: 1px solid var(--success);
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        .status-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            background: var(--success);
-            animation: pulse 2s infinite;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.5; }
-            100% { opacity: 1; }
-        }
-
         .empty-state {
             text-align: center;
             padding: 40px;
@@ -544,7 +519,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>🚀 Company Scraper Pro</h1>
+            <h1>🚀 Web Scraper Pro</h1>
             <p>Extract emails, phones, social profiles, and team information from websites</p>
         </div>
 
@@ -553,11 +528,6 @@
             <div class="panel">
                 <h2>⚙️ Scraping Configuration</h2>
                 
-                <div class="connection-status">
-                    <div class="status-dot"></div>
-                    <span>Direct Connection Enabled (No Proxies, No Robots.txt)</span>
-                </div>
-
                 <div class="form-group">
                     <label for="urlFile">📁 Upload URLs File</label>
                     <div class="file-upload-area" id="fileUploadArea">
@@ -670,7 +640,6 @@
                     <li>LinkedIn profiles</li>
                     <li>GitHub profiles</li>
                     <li>Facebook profiles</li>
-                    <li>Team members with roles</li>
                     <li>Company information</li>
                 </div>
             </div>
@@ -890,7 +859,7 @@
                 const response = await fetch(`${CONFIG.API_BASE_URL}/health`);
                 if (response.ok) {
                     const stats = await response.json();
-                    showNotification('System is healthy! Connection: ' + (stats.directConnection ? 'DIRECT' : 'PROXY'), 'success');
+                    showNotification('System is healthy!', 'success');
                 } else {
                     throw new Error('Server returned error status');
                 }
