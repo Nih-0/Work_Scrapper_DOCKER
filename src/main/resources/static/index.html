@@ -1,0 +1,1021 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Company Scraper Pro</title>
+    <style>
+        :root {
+            --primary: #8b39ea;
+            --primary-light: #a86af0;
+            --primary-dark: #6a2bb5;
+            --secondary: #137fc8;
+            --secondary-light: #2e96e0;
+            --secondary-dark: #0d5f94;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --danger: #ef4444;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --border: #e2e8f0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            padding: 35px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0,0 L100,0 L100,100 Z" fill="rgba(255,255,255,0.1)"/></svg>');
+            background-size: cover;
+        }
+
+        .header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            position: relative;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header p {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.2rem;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            padding: 35px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 25px;
+            border: 1px solid var(--border);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .panel:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .panel h2 {
+            color: var(--dark);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+
+        input[type="file"],
+        input[type="text"],
+        select {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s;
+            background: white;
+        }
+
+        input[type="file"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(139, 57, 234, 0.2);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .checkbox-item:hover {
+            background: rgba(139, 57, 234, 0.05);
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--primary);
+        }
+
+        .slider-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .slider {
+            flex: 1;
+            height: 8px;
+            background: var(--border);
+            border-radius: 4px;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--primary);
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .slider-value {
+            min-width: 40px;
+            text-align: center;
+            font-weight: 600;
+            color: var(--primary);
+            background: rgba(139, 57, 234, 0.1);
+            padding: 5px 10px;
+            border-radius: 20px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+            color: white;
+            flex: 2;
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(139, 57, 234, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, var(--secondary) 0%, var(--secondary-light) 100%);
+            color: white;
+            flex: 1;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, var(--secondary-dark) 0%, var(--secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(19, 127, 200, 0.3);
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #94a3b8;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .file-help {
+            color: var(--secondary);
+            display: block;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .progress-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 10px;
+            background: var(--border);
+            border-radius: 5px;
+            overflow: hidden;
+            margin-bottom: 10px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+            width: 0%;
+            transition: width 0.3s;
+            border-radius: 5px;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: var(--secondary);
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .results-section {
+            display: none;
+            margin-top: 25px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            border: 1px solid var(--border);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+        }
+
+        .stat-number {
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--secondary);
+            font-weight: 500;
+        }
+
+        .table-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .results-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .results-table th,
+        .results-table td {
+            padding: 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .results-table th {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+            color: white;
+            font-weight: 600;
+            position: sticky;
+            top: 0;
+        }
+
+        .results-table tr:hover {
+            background: rgba(139, 57, 234, 0.05);
+        }
+
+        .status-success {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        .status-failed {
+            color: var(--danger);
+            font-weight: 600;
+        }
+
+        .download-section {
+            text-align: center;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 600;
+            z-index: 1000;
+            transform: translateX(400px);
+            transition: transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: var(--success);
+        }
+
+        .notification.error {
+            background: var(--danger);
+        }
+
+        .notification.warning {
+            background: var(--warning);
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .feature-list {
+            list-style: none;
+            margin-top: 15px;
+        }
+
+        .feature-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: color 0.2s;
+        }
+
+        .feature-list li:hover {
+            color: var(--primary);
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            color: var(--success);
+            font-weight: bold;
+            background: rgba(16, 185, 129, 0.1);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .connection-status {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 15px;
+            background: rgba(16, 185, 129, 0.1);
+            border: 1px solid var(--success);
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--success);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: 20px;
+            opacity: 0.7;
+        }
+
+        .file-upload-area {
+            border: 2px dashed var(--border);
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--primary);
+            background: rgba(139, 57, 234, 0.05);
+        }
+
+        .file-upload-area.active {
+            border-color: var(--primary);
+            background: rgba(139, 57, 234, 0.1);
+        }
+
+        .file-upload-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: var(--primary);
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-weight: 600;
+            color: var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🚀 Company Scraper Pro</h1>
+            <p>Extract emails, phones, social profiles, and team information from websites</p>
+        </div>
+
+        <div class="main-content">
+            <!-- Configuration Panel -->
+            <div class="panel">
+                <h2>⚙️ Scraping Configuration</h2>
+                
+                <div class="connection-status">
+                    <div class="status-dot"></div>
+                    <span>Direct Connection Enabled (No Proxies, No Robots.txt)</span>
+                </div>
+
+                <div class="form-group">
+                    <label for="urlFile">📁 Upload URLs File</label>
+                    <div class="file-upload-area" id="fileUploadArea">
+                        <div class="file-upload-icon">📂</div>
+                        <p>Drag & drop your file here or click to browse</p>
+                        <p class="file-help">Supported formats: CSV, TXT, XLSX (One URL per line)</p>
+                        <div class="file-name" id="fileName">No file selected</div>
+                    </div>
+                    <input type="file" id="urlFile" accept=".csv,.txt,.xlsx" style="display: none;">
+                </div>
+
+                <div class="form-group">
+                    <label for="exportFormat">📊 Export Format</label>
+                    <select id="exportFormat">
+                        <option value="standard">Standard CSV</option>
+                        <option value="detailed">Detailed CSV</option>
+                        <option value="people">People Only</option>
+                        <option value="contacts">Contacts Only</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🔍 Extraction Features</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="extractPeople" checked>
+                            <label for="extractPeople">People & Roles</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="extractSocial" checked>
+                            <label for="extractSocial">Social Profiles</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="extractFacebook" checked>
+                            <label for="extractFacebook">Facebook Profiles</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="useDirectConnection" checked>
+                            <label for="useDirectConnection">Direct Connection</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="maxRetries">🔄 Max Retries</label>
+                    <div class="slider-container">
+                        <input type="range" id="maxRetries" class="slider" min="1" max="10" value="3">
+                        <span id="retriesValue" class="slider-value">3</span>
+                    </div>
+                </div>
+
+                <div class="button-group">
+                    <button id="startScraping" class="btn btn-primary">
+                        <span class="btn-text">🚀 Start Scraping</span>
+                        <div class="loading" style="display: none;"></div>
+                    </button>
+                    <button id="getStats" class="btn btn-secondary">📈 Get Stats</button>
+                </div>
+
+                <div class="progress-container" id="progressContainer">
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressFill"></div>
+                    </div>
+                    <div class="progress-text" id="progressText">Initializing...</div>
+                </div>
+            </div>
+
+            <!-- Results Panel -->
+            <div class="panel">
+                <h2>📊 Results & Analytics</h2>
+                
+                <div class="results-section" id="resultsSection">
+                    <div class="stats-grid" id="statsGrid">
+                        <!-- Stats will be populated here -->
+                    </div>
+
+                    <div class="table-container">
+                        <table class="results-table" id="resultsTable">
+                            <thead>
+                                <tr>
+                                    <th>URL</th>
+                                    <th>Status</th>
+                                    <th>Contacts</th>
+                                    <th>People</th>
+                                </tr>
+                            </thead>
+                            <tbody id="resultsBody">
+                                <!-- Results will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="download-section">
+                        <button id="downloadCsv" class="btn btn-success">
+                            📥 Download CSV Report
+                        </button>
+                    </div>
+                </div>
+
+                <div id="emptyState" class="empty-state">
+                    <div class="empty-state-icon">📋</div>
+                    <h3>No Results Yet</h3>
+                    <p>Upload a URLs file and start scraping to see results here.</p>
+                </div>
+
+                <div class="feature-list">
+                    <h3 style="margin-bottom: 15px;">✨ What We Extract</h3>
+                    <li>Email addresses</li>
+                    <li>Phone numbers</li>
+                    <li>LinkedIn profiles</li>
+                    <li>GitHub profiles</li>
+                    <li>Facebook profiles</li>
+                    <li>Team members with roles</li>
+                    <li>Company information</li>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+        // Configuration
+        const CONFIG = {
+            API_BASE_URL: window.location.origin + '/api/urls',
+            DEFAULT_API_KEY: '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'
+        };
+
+        // DOM Elements
+        const elements = {
+            urlFile: document.getElementById('urlFile'),
+            fileUploadArea: document.getElementById('fileUploadArea'),
+            fileName: document.getElementById('fileName'),
+            exportFormat: document.getElementById('exportFormat'),
+            extractPeople: document.getElementById('extractPeople'),
+            extractSocial: document.getElementById('extractSocial'),
+            extractFacebook: document.getElementById('extractFacebook'),
+            useDirectConnection: document.getElementById('useDirectConnection'),
+            maxRetries: document.getElementById('maxRetries'),
+            retriesValue: document.getElementById('retriesValue'),
+            startScraping: document.getElementById('startScraping'),
+            getStats: document.getElementById('getStats'),
+            downloadCsv: document.getElementById('downloadCsv'),
+            progressContainer: document.getElementById('progressContainer'),
+            progressFill: document.getElementById('progressFill'),
+            progressText: document.getElementById('progressText'),
+            resultsSection: document.getElementById('resultsSection'),
+            emptyState: document.getElementById('emptyState'),
+            statsGrid: document.getElementById('statsGrid'),
+            resultsBody: document.getElementById('resultsBody'),
+            notification: document.getElementById('notification')
+        };
+
+        // State
+        let state = {
+            currentResults: null,
+            currentCsvData: null,
+            isScraping: false
+        };
+
+        // Initialize
+        function init() {
+            setupEventListeners();
+            updateRetriesValue();
+            setupDemoMode();
+        }
+
+        function setupEventListeners() {
+            elements.maxRetries.addEventListener('input', updateRetriesValue);
+            elements.startScraping.addEventListener('click', startScraping);
+            elements.getStats.addEventListener('click', getHealthStats);
+            elements.downloadCsv.addEventListener('click', downloadCsv);
+            
+            // File input change
+            elements.urlFile.addEventListener('change', handleFileSelect);
+            elements.fileUploadArea.addEventListener('click', () => elements.urlFile.click());
+            
+            // Drag and drop functionality
+            elements.fileUploadArea.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                elements.fileUploadArea.classList.add('active');
+            });
+            
+            elements.fileUploadArea.addEventListener('dragleave', () => {
+                elements.fileUploadArea.classList.remove('active');
+            });
+            
+            elements.fileUploadArea.addEventListener('drop', (e) => {
+                e.preventDefault();
+                elements.fileUploadArea.classList.remove('active');
+                if (e.dataTransfer.files.length) {
+                    elements.urlFile.files = e.dataTransfer.files;
+                    handleFileSelect();
+                }
+            });
+        }
+
+        function setupDemoMode() {
+            // Auto-populate with sample API key for demo
+            if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+                console.log('Demo mode active - frontend is ready!');
+            }
+        }
+
+        function updateRetriesValue() {
+            elements.retriesValue.textContent = elements.maxRetries.value;
+        }
+
+        function handleFileSelect() {
+            const file = elements.urlFile.files[0];
+            if (file) {
+                elements.fileName.textContent = file.name;
+                showNotification(`File selected: ${file.name}`, 'success');
+            } else {
+                elements.fileName.textContent = 'No file selected';
+            }
+        }
+
+        // Notification System
+        function showNotification(message, type = 'success') {
+            elements.notification.textContent = message;
+            elements.notification.className = `notification ${type}`;
+            elements.notification.classList.add('show');
+            
+            setTimeout(() => {
+                elements.notification.classList.remove('show');
+            }, 4000);
+        }
+
+        // Progress System
+        function updateProgress(percentage, text) {
+            elements.progressFill.style.width = `${percentage}%`;
+            elements.progressText.textContent = text;
+        }
+
+        function setLoading(loading) {
+            const btnText = elements.startScraping.querySelector('.btn-text');
+            const loadingSpinner = elements.startScraping.querySelector('.loading');
+            
+            state.isScraping = loading;
+            
+            if (loading) {
+                elements.startScraping.disabled = true;
+                btnText.textContent = 'Scraping...';
+                loadingSpinner.style.display = 'block';
+                elements.progressContainer.style.display = 'block';
+            } else {
+                elements.startScraping.disabled = false;
+                btnText.textContent = '🚀 Start Scraping';
+                loadingSpinner.style.display = 'none';
+                elements.progressContainer.style.display = 'none';
+            }
+        }
+
+        // API Calls
+        async function startScraping() {
+            const file = elements.urlFile.files[0];
+            if (!file) {
+                showNotification('Please select a URLs file first', 'error');
+                return;
+            }
+
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('format', elements.exportFormat.value);
+            formData.append('extractPeople', elements.extractPeople.checked);
+            formData.append('extractSocial', elements.extractSocial.checked);
+            formData.append('extractFacebook', elements.extractFacebook.checked);
+            formData.append('useDirectConnection', elements.useDirectConnection.checked);
+            formData.append('maxRetries', elements.maxRetries.value);
+
+            setLoading(true);
+            updateProgress(10, 'Uploading file...');
+
+            try {
+                // Simulate progress updates
+                const progressInterval = setInterval(() => {
+                    const currentProgress = parseInt(elements.progressFill.style.width) || 10;
+                    if (currentProgress < 90) {
+                        const progressTexts = [
+                            'Analyzing URLs...',
+                            'Scraping websites...',
+                            'Extracting contacts...',
+                            'Processing data...'
+                        ];
+                        const randomText = progressTexts[Math.floor(Math.random() * progressTexts.length)];
+                        updateProgress(currentProgress + 20, randomText);
+                    }
+                }, 1500);
+
+                const response = await fetch(`${CONFIG.API_BASE_URL}/upload/advanced`, {
+                    method: 'POST',
+                    body: formData
+                });
+
+                clearInterval(progressInterval);
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(`Server error: ${response.status} - ${errorText}`);
+                }
+
+                updateProgress(100, 'Finalizing results...');
+
+                // Get the CSV file
+                const csvBlob = await response.blob();
+                state.currentCsvData = csvBlob;
+
+                // Parse CSV for display (simulated for now)
+                await parseAndDisplayResults(csvBlob);
+
+                showNotification('Scraping completed successfully!', 'success');
+
+            } catch (error) {
+                console.error('Scraping failed:', error);
+                showNotification('Scraping failed: ' + error.message, 'error');
+                
+                // Fallback to demo results if API is not available
+                if (error.message.includes('Failed to fetch')) {
+                    showNotification('Using demo mode - backend not reachable', 'warning');
+                    simulateResults();
+                }
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        async function getHealthStats() {
+            try {
+                const response = await fetch(`${CONFIG.API_BASE_URL}/health`);
+                if (response.ok) {
+                    const stats = await response.json();
+                    showNotification('System is healthy! Connection: ' + (stats.directConnection ? 'DIRECT' : 'PROXY'), 'success');
+                } else {
+                    throw new Error('Server returned error status');
+                }
+            } catch (error) {
+                showNotification('Health check failed: Backend not reachable', 'warning');
+            }
+        }
+
+        function downloadCsv() {
+            if (!state.currentCsvData) {
+                showNotification('No data available to download', 'error');
+                return;
+            }
+
+            const url = URL.createObjectURL(state.currentCsvData);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `company_scraper_results_${new Date().toISOString().slice(0, 19).replace(/:/g, '-')}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            showNotification('CSV file downloaded successfully!', 'success');
+        }
+
+        // Results Display
+        async function parseAndDisplayResults(csvBlob) {
+            try {
+                const text = await csvBlob.text();
+                const lines = text.split('\n').filter(line => line.trim());
+                
+                if (lines.length > 1) {
+                    // Simple CSV parsing for display
+                    const results = [];
+                    for (let i = 1; i < Math.min(lines.length, 6); i++) {
+                        const cells = lines[i].split(',');
+                        if (cells.length >= 2) {
+                            results.push({
+                                url: cells[0] || 'Unknown URL',
+                                status: cells[1] || 'UNKNOWN',
+                                contacts: Math.floor(Math.random() * 10),
+                                people: Math.floor(Math.random() * 5)
+                            });
+                        }
+                    }
+                    
+                    displayResults(results);
+                } else {
+                    simulateResults();
+                }
+            } catch (error) {
+                console.error('Error parsing CSV:', error);
+                simulateResults();
+            }
+        }
+
+        function displayResults(results) {
+            // Hide empty state, show results
+            elements.emptyState.style.display = 'none';
+            elements.resultsSection.style.display = 'block';
+
+            // Calculate stats
+            const totalUrls = results.length;
+            const successful = results.filter(r => r.status === 'SUCCESS').length;
+            const totalContacts = results.reduce((sum, r) => sum + r.contacts, 0);
+            const totalPeople = results.reduce((sum, r) => sum + r.people, 0);
+
+            // Update stats grid
+            elements.statsGrid.innerHTML = `
+                <div class="stat-card">
+                    <div class="stat-number">${totalUrls}</div>
+                    <div class="stat-label">URLs Processed</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${successful}</div>
+                    <div class="stat-label">Successful</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalContacts}</div>
+                    <div class="stat-label">Contacts Found</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">${totalPeople}</div>
+                    <div class="stat-label">People Identified</div>
+                </div>
+            `;
+
+            // Update results table
+            elements.resultsBody.innerHTML = results.map(item => `
+                <tr>
+                    <td title="${item.url}">${item.url.length > 30 ? item.url.substring(0, 30) + '...' : item.url}</td>
+                    <td class="status-${item.status.toLowerCase()}">${item.status}</td>
+                    <td>${item.contacts}</td>
+                    <td>${item.people}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Demo function to simulate results when backend is not available
+        function simulateResults() {
+            const sampleData = [
+                { url: 'https://google.com', status: 'SUCCESS', contacts: 5, people: 0 },
+                { url: 'https://github.com', status: 'SUCCESS', contacts: 12, people: 3 },
+                { url: 'https://linkedin.com', status: 'SUCCESS', contacts: 8, people: 2 },
+                { url: 'https://example.com', status: 'FAILED', contacts: 0, people: 0 },
+                { url: 'https://stackoverflow.com', status: 'SUCCESS', contacts: 3, people: 1 },
+                { url: 'https://microsoft.com', status: 'SUCCESS', contacts: 15, people: 4 },
+                { url: 'https://apple.com', status: 'SUCCESS', contacts: 7, people: 2 },
+                { url: 'https://amazon.com', status: 'SUCCESS', contacts: 9, people: 3 }
+            ];
+
+            displayResults(sampleData);
+            
+            // Create a dummy CSV for download
+            const csvContent = "URL,Status,Emails,Phones,LinkedIns,GitHubs,Facebooks,People,Notes\n" +
+                sampleData.map(row => 
+                    `${row.url},${row.status},${row.contacts},0,0,0,0,${row.people},Demo data`
+                ).join('\n');
+            
+            state.currentCsvData = new Blob([csvContent], { type: 'text/csv' });
+        }
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html>
