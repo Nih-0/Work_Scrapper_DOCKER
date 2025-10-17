@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: companyScraper
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+server:
+  port: 8080
+  servlet:
+    context-path: /
+  compression:
+    enabled: true
+
+scraper:
+  connection:
+    direct: true
+  threads:
+    max: 8
+    min: 2
+  delay:
+    min: 1000
+    domain: 5000
+  retries:
+    max: 3
+  timeout:
+    total: 30
+  batch:
+    size: 25
+  ai:
+    enabled: true
+  extract:
+    people: true
+    social: true
+    facebook: true
+  proxy:
+    enabled: false
+    strategy: ROUND_ROBIN
+
+logging:
+  level:
+    com.example.companyScraper: INFO
+    org.springframework.web: INFO
+  file:
+    name: /app/logs/application.log
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics
+  endpoint:
+    health:
+      show-details: always

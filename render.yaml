@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: company-scraper
+    env: docker
+    docker:
+      dockerfile: Dockerfile
+      dockerContext: .
+    envVars:
+      - key: SPRING_PROFILES_ACTIVE
+        value: prod
+      - key: JAVA_OPTS
+        value: -Xmx512m -Xms256m
+    plan: free
+    numInstances: 1

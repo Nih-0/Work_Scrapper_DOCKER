@@ -1,0 +1,36 @@
+server:
+  port: 8080
+  servlet:
+    context-path: /
+
+spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 10MB
+      max-request-size: 10MB
+  web:
+    resources:
+      static-locations: classpath:/static/
+
+scraper:
+  connection:
+    direct: true
+  threads:
+    max: 4
+  delay:
+    min: 2000
+    domain: 10000
+  retries:
+    max: 2
+  extract:
+    people: true
+    social: true
+    facebook: true
+
+logging:
+  level:
+    com.example.companyScraper: INFO
+    org.springframework: WARN
+  file:
+    name: /app/logs/application.log
