@@ -13,14 +13,14 @@ public class WebConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/**") 
+                registry.addMapping("/**")
                         .allowedOrigins(
-                                "https://apolloscraperw.netlify.app", 
-                                "http://localhost:3000"
+                                "https://apolloscraperw.netlify.app",
+                                "http://bullseyes.shop"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .allowCredentials(false);
+                        .allowCredentials(true);
             }
         };
     }
