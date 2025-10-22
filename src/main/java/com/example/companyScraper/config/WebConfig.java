@@ -16,7 +16,8 @@ public class WebConfig {
                 registry.addMapping("/**")
                         .allowedOrigins(
                                 "https://apolloscraperw.netlify.app",
-                                "http://bullseyes.shop"
+                                "http://bullseyes.shop",
+                                 "https://bullseyes.shop"
                         )
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
